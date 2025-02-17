@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Criar Novo Post{% endblock %}
+{% block content %}
+    <h2>Criar Novo Post</h2>
+    <form action="{{ url_for('create_post') }}" method="post">
+        <div class="mb-3">
+            <label for="title" class="form-label">Título:</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Conteúdo:</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Publicar</button>
+        <a href="{{ url_for('profile') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

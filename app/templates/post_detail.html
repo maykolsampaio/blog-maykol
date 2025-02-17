@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ post['title'] }}{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">{{ post['title'] }}</h2>
+            <h6 class="card-subtitle mb-2 text-muted">Autor: <a href="{{ url_for('user_posts', username=post['author']) }}">{{ post['author'] }}</a></h6>
+            <p class="card-text">{{ post['content'] }}</p>
+            <a href="https://api.whatsapp.com/send?text={{ post['title'] }}. Veja: {{ url_for('post_detail', post_id=post_id, _external=True) }}" target="_blank" class="card-link"><i class="fa-brands fa-square-whatsapp fa-xl" style="color: #25d366;"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url={{ url_for('post_detail', post_id=post_id, _external=True) }}&text={{ post['title'] }}" target="_blank" class="card-link"><i class="fa-brands fa-square-x-twitter fa-xl" style="color:black"></i></a>
+                    
+
+
+        </div>
+    </div>
+{% endblock %}

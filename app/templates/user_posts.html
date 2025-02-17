@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Posts de {{ username }}{% endblock %}
+{% block content %}
+    <h2>Posts de {{ username }}</h2>
+    <ul>
+        {% for post_id, post in posts.items() %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{{ url_for('post_detail', post_id=post_id) }}">{{ post['title'] }}</a></h5>
+                    <p class="card-text limited-content">{{ post['content'] }}</p>
+                    <a href="https://api.whatsapp.com/send?text={{ url_for('user_posts', username=post['author'], _external=True) }}" target="_blank" class="card-link"><i class="fa-brands fa-square-whatsapp fa-xl" style="color: #25d366;"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url={{ url_for('user_posts', username=post['author'], _external=True) }}&text={{ post['title'] }}" target="_blank" class="card-link"><i class="fa-brands fa-square-x-twitter fa-xl" style="color:black"></i></a>
+                    <!-- Instagram sharing is more complex and requires an image URL.
+                         Consider using a service like buffer or implementing a server-side solution. -->
+                </div>
+            </div>
+        {% else %}
+            <li>Este usuário não possui posts.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Editar Post{% endblock %}
+{% block content %}
+    <h2>Editar Post</h2>
+    <form action="{{ url_for('edit_post', post_id=post_id) }}" method="post">
+        <div class="mb-3">
+            <label for="title" class="form-label">Título:</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ post['title'] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Conteúdo:</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required>{{ post['content'] }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        <a href="{{ url_for('profile') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Título Padrão{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    {% block head %}{% endblock %}
+    <style>
+        .limited-content {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Número de linhas a serem exibidas */
+            -webkit-box-orient: vertical;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar inclusa -->
+    {% include 'navbar.html' %}
+
+    <div class="container mt-5">
+        {% if message %}
+            {% if message_type == 'danger' %}
+            <div id="alert" class="alert alert-{{message_type}}">{{ message }}</div>
+            {% elif message_type == 'info' %}
+            <div id="alert" class="alert alert-{{message_type}}">{{ message }}</div>
+            {% elif message_type == 'success' %}
+            <div id="alert" class="alert alert-{{message_type}}">{{ message }}</div>
+            {% elif message_type == 'warning' %}
+            <div id="alert" class="alert alert-{{message_type}}">{{ message }}</div>
+            {% endif %}
+        {% endif %}
+        <script>
+            setTimeout(function() {
+            var message = document.getElementById('alert');
+            var opacity = 1;
+            var fadeEffect = setInterval(function () {
+                if (opacity > 0) {
+                    opacity -= 0.1;
+                    message.style.opacity = opacity;
+                } else {
+                    clearInterval(fadeEffect);
+                    message.style.display = 'none';
+                }
+            }, 200);
+        }, 2000);
+        </script>
+        {% block content %}
+        <!-- Conteúdo será sobrescrito nas páginas que extendem este template -->
+        {% endblock %}
+    </div>
+
+    <footer class="text-center mt-5">
+        <p>&copy; 2024 - Sistema de Login Flask</p>
+    </footer>
+</body>
+</html>

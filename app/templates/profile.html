@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block title %}Perfil de {{ session['username'] }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+<style>
+    .user-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .user-item {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        justify-content: space-between;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .user-item:nth-child(odd) {
+        background-color: #f1f1f1;
+    }
+
+    .user-name {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    #add:hover {
+        opacity: 0.8;
+        background-color: #ddd;
+    }
+
+    .post-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .post-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .post-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .post-content {
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<h2>Informações do usuário</h2>
+<p><strong>Nome:</strong> {{ session['info_user']['nome'] }}</p>
+<p><strong>E-mail:</strong> {{ session['info_user']['email'] }}</p>
+{% if session['type'] == 'Administrador' or session['type'] == 'Administrativo' %}
+<p><strong>Cargo:</strong> {{ session['info_user']['cargo'] }}</p>
+{% elif session['type'] == 'professor' %}
+<p><strong>Área:</strong> {{ session['info_user']['area'] }}</p>
+{% elif session['type'] == 'aluno' %}
+<p><strong>Curso:</strong> {{ session['info_user']['curso'] }}</p>
+{% endif %}
+<p><strong>Telefone:</strong> {{ session['info_user']['telefone'] }}</p>
+
+{% if session['admin']==True %}
+<div class="form-container">
+    <h3>Criar Novo Usuário</h3>
+    <button id="add" type="button" class="btn btn-link"><span class="material-icons"
+            style="font-size:48px;color:green">person_add</span></button>
+    <form id="form" action="/inserir" method="POST" style="display:None;">
+        <div class="mb-3 row">
+            <label for="username" class="col-sm-1 col-form-label">Usuário:</label>
+            <input id="username" type="text" class="col-sm-3" id="username" name="username" required>
+            <label for="email" class="col-sm-1 col-form-label">Email:</label>
+            <input id="email" type="email" class="col-sm-3" id="email" name="email" required><br>
+        </div>
+        <div class="mb-3 row">
+            <label for="nome" class="col-sm-1 col-form-label">Nome:</label>
+            <input id="nome" type="text" class="col-sm-7" name="nome" required>
+        </div>
+        <div class="mb-3 row">
+            <label for="tipo" class="col-sm-1 col-form-label">Tipo:</label>
+            <select id="tipo" name="tipo" class="col-sm-3" required onchange="mostrarInput()">
+                <option value="Administrador">Administrador</option>
+                <option value="Administrativo">Administrativo</option>
+                <option value="Aluno">Aluno</option>
+                <option value="Professor">Professor</option>
+                <option value="Visitante" selected>Visitante</option>
+            </select>
+            <label id="labelDinamico" for="desc" class="col-sm-1 col-form-label"></label>
+            <input id="desc_tip" type="text" class="col-sm-3" name="desc" required>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-sm-1 col-form-label" id="pw_label" for="password">Senha:</label>
+            <input class="col-sm-2" type="password" id="password" name="password" required>
+        </div>
+        <button id="criar" type="submit" class="btn btn-success">Criar Usuário</button>
+        <button id="cancel" type="submit" class="btn btn-warning">Cancelar</button>
+    </form>
+
+</div>
+<h2>Lista de usuários</h2>
+<ul class="user-list">
+    {% for key, data in users.items() %}
+    {% if 'admin' not in key %}
+    <li class="user-item">
+        <span class="user-name">{{ key }}</span>
+        <span class="user-name">{{ data["type"] }}</span>
+        <span class="user-name">{{ data["info"].get("email") or "Vazio" }}</span>
+        <div class="actions">
+            <button id="edit" data-user='{{ data|tojson|safe }}' data-key="{{ key }}" onclick="editar(this)"
+                class="btn btn-warning">Editar</button>
+            <a href='{{ url_for("excluir", username=key) }}'><button type="button" class="btn btn-danger" >Excluir</button></a>
+        </div>
+
+    </li>
+    {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if session['logged'] and session['type'] != 'Visitante' %}
+    <h2>Meus Posts</h2>
+     <a href="{{ url_for('create_post') }}">
+        <button type="button" class="btn btn-primary">Criar Novo Post</button>
+    </a>
+    <ul class="post-list">
+        {% for post_id, post in posts.items() %}
+            <li class="post-item">
+                <h3 class="post-title"><a href="{{ url_for('post_detail', post_id=post_id) }}">{{ post['title'] }}</a></h3>
+                <p class="post-content limited-content">{{ post['content'] }}</p>
+                <div class="actions">
+                     <a href="{{ url_for('edit_post', post_id=post_id) }}">
+                        <button  class="btn btn-warning">Editar</button>
+                    </a>
+                    <a href="{{ url_for('delete_post', post_id=post_id) }}">
+                        <button type="button" class="btn btn-danger">Excluir</button>
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<script>
+    // Função para clique do ícone de adicionar para abrir o formulário
+    document.getElementById('add').addEventListener('click', function () {
+        document.getElementById('form').style.display = 'block';
+        document.getElementById('form').action = '/inserir';
+        document.getElementById('add').style.display = 'None';
+        mostrarInput()
+    });
+
+    // Função para clique do ícone de adicionar para abrir o formulário
+    document.getElementById('cancel').addEventListener('click', function () {
+        document.getElementById('form').style.display = 'None';
+        document.getElementById('add').style.display = 'Block';
+    });
+
+
+    function editar(button) {
+        let key = button.getAttribute("data-key"); // Obtém a chave do usuário
+        let data = JSON.parse(button.getAttribute("data-user")); // Converte JSON string para objeto
+
+        let form = document.getElementById('form');
+        document.getElementById('add').style.display = 'none';
+        form.style.display = 'block';
+        form.action = '/alterar/' + key;
+
+        document.getElementById('username').value = key;
+        document.getElementById('nome').value = data.info.nome;
+        document.getElementById('email').value = data.info.email;
+        document.getElementById('tipo').value = data.type;
+        if (data.type === 'Aluno') {
+            document.getElementById('desc_tip').value = data.info.curso;
+        } else if (data.type === 'Professor') {
+            document.getElementById('desc_tip').value = data.info.area;
+        } else if (data.type === 'Administrativo' || data.type === 'Administrador') {
+            document.getElementById('desc_tip').value = data.info.cargo;
+        } else if (data.type === 'Visitante') {
+            document.getElementById('desc_tip').value = data.info.desc;
+        }
+        document.getElementById('password').value = data.password;
+
+        document.getElementById('criar').innerHTML = 'Atualizar';
+
+        mostrarInput();
+    }
+
+
+
+    // Função para mostrar ou ocultar o input com base no tipo selecionado
+    function mostrarInput() {
+        const tipo = document.getElementById('tipo').value;
+        const labelDinamico = document.getElementById('labelDinamico');
+
+        switch (tipo) {
+            case 'admin':
+                labelDinamico.innerHTML = "Cargo:";
+                break;
+
+            case 'aluno':
+                labelDinamico.innerHTML = "Matrícula:";
+                break;
+
+            case 'professor':
+                labelDinamico.innerHTML = labelDinamico.innerHTML = "Área:";
+                break;
+
+            case 'visitante':
+                labelDinamico.innerHTML = "Visitante:"
+                break;
+        }
+    }
+
+
+</script>
+{% endblock %}
