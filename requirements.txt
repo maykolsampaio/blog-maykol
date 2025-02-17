@@ -1,0 +1,9 @@
+# Dev environment
+pip
+autopep8
+
+# App
+flask
+requests==1.1.0
+firebase_admin
+datetime
