@@ -64,16 +64,16 @@ Projeto: Postagens de um Blog
 1.  Clone o repositório:
 
     ```bash
-    git clone <seu_repositorio>
-    cd <nome_do_projeto>
+    git clone https://github.com/maykolsampaio/blog-maykol.git
+    cd blog-projeto
     ```
 
 2.  Crie um ambiente virtual (opcional, mas recomendado):
 
     ```bash
     python -m venv venv
-    source venv/bin/activate  # No Linux/macOS
-    venv\Scripts\activate  # No Windows
+    venv\Scripts\activate  # Se for Windows
+    source venv/bin/activate  # Se for Linux/macOS
     ```
 
 3.  Instale as dependências:
@@ -88,10 +88,10 @@ Projeto: Postagens de um Blog
 
     *   Crie um projeto no Firebase Console.
     *   Gere um arquivo de chave de conta de serviço (serviceAccountKey.json).
-    *   Defina a variável de ambiente `GOOGLE_APPLICATION_CREDENTIALS` para apontar para o caminho do arquivo.
+    *   Defina a variável de ambiente em config.py ` FIREBASE_CREDENTIALS` para apontar para o caminho do arquivo.
 
     ```bash
-    export GOOGLE_APPLICATION_CREDENTIALS="/caminho/para/serviceAccountKey.json"
+     FIREBASE_CREDENTIALS="/caminho/para/serviceAccountKey.json"
     ```
 
 ## Execução
