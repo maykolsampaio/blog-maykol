@@ -5,5 +5,5 @@ autopep8
 # App
 flask
 requests==1.1.0
-firebase_admin
+firebase-admin
 datetime
